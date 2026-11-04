@@ -42,20 +42,16 @@
   .music-btn.playing { animation: spin 4s linear infinite; }
   @keyframes spin { 100% { transform: rotate(360deg); } }
 
-  /* Обертка для центрирования */
+  /* Расположение книги (справа, как в первом варианте) */
   .book-wrapper {
     width: 100vw; height: 100vh;
-    display: flex; justify-content: center; align-items: center;
+    display: flex; justify-content: flex-end; align-items: center;
     perspective: 2800px;
   }
-
-  /* Сама книга (фиксированные пропорции) */
   .book {
-    width: 100%;
-    max-width: 900px; /* Ограничиваем ширину */
-    height: 100%;
-    max-height: 600px; /* Ограничиваем высоту */
-    margin: 0 40px; /* Отступы по бокам для кнопок */
+    width: min(700px, 45vw);
+    height: min(620px, 82vh);
+    margin-right: 5vw;
     position: relative;
     transform-style: preserve-3d;
   }
@@ -65,6 +61,8 @@
     position: absolute; inset: 0;
     transform-origin: left center;
     transform-style: preserve-3d;
+    /* translateZ(0) убирает баг с размытыми тенями в Safari/Chrome */
+    transform: translateZ(0); 
     transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
     will-change: transform;
   }
@@ -77,24 +75,21 @@
   
   /* Лицевая сторона */
   .page-front {
-    border-radius: 0 20px 20px 0;
-    box-shadow: 10px 10px 30px rgba(180, 80, 120, 0.15), 
-                inset 5px 0 15px rgba(180, 80, 120, 0.05); /* Тень внутри для эффекта сгиба */
+    border-radius: 0 18px 18px 0;
+    /* Вместо размытой тени используем четкую границу и легкую тень */
+    border: 1px solid rgba(201, 75, 107, 0.1);
     background:
       radial-gradient(circle at 100% 0%, rgba(255,220,230,0.6) 0%, transparent 55%),
       radial-gradient(circle at 0% 100%, rgba(255,200,220,0.4) 0%, transparent 55%),
-      linear-gradient(135deg, #ffffff 0%, #fff5f8 100%);
-    display: flex; 
-    padding: 40px; 
-    gap: 30px;
-    border-left: 2px solid #fce4ec; /* Корешок книги */
+      linear-gradient(135deg, #fff9fb 0%, #fff5f8 100%);
+    display: flex; padding: 32px; gap: 26px;
   }
 
   /* Задняя сторона (когда перевернули) */
   .page-back {
     transform: rotateY(180deg);
-    border-radius: 20px 0 0 20px;
-    box-shadow: -10px 10px 30px rgba(180, 80, 120, 0.15);
+    border-radius: 18px 0 0 18px;
+    border: 1px solid rgba(201, 75, 107, 0.1);
     background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
     display: flex; justify-content: center; align-items: center;
   }
@@ -102,17 +97,16 @@
 
   /* Блок с фото */
   .photo-side {
-    flex: 0 0 45%;
+    flex: 0 0 42%;
     display: flex; justify-content: center; align-items: center;
   }
   .photo-frame {
     position: relative;
-    width: 100%; 
-    max-width: 280px;
+    width: 100%; max-width: 280px;
     aspect-ratio: 3 / 4;
-    background: #fff;
-    padding: 12px;
-    box-shadow: 0 10px 25px rgba(180, 80, 120, 0.2);
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+    padding: 10px;
+    box-shadow: 0 8px 25px rgba(180, 80, 120, 0.25);
     border-radius: 4px;
     opacity: 0;
     transform: rotate(-2deg) translateY(20px) scale(0.92);
@@ -131,24 +125,24 @@
   .text-side {
     flex: 1;
     display: flex; flex-direction: column; justify-content: center;
-    padding-right: 10px;
+    padding-right: 6px;
   }
   .page-num {
     font-family: 'Great Vibes', cursive;
-    color: #d68aa8; font-size: 1.4em; margin-bottom: 8px;
+    color: #d68aa8; font-size: 1.2em; margin-bottom: 6px;
     opacity: 0; transform: translateY(18px);
     transition: opacity 0.8s 0.35s ease, transform 0.8s 0.35s ease;
   }
   .page-title {
     font-family: 'Great Vibes', cursive;
     color: #c94b6b;
-    font-size: clamp(2em, 3vw, 2.8em);
-    line-height: 1.15; margin-bottom: 20px;
+    font-size: clamp(1.7em, 3vw, 2.4em);
+    line-height: 1.15; margin-bottom: 16px;
     opacity: 0; transform: translateY(18px);
     transition: opacity 0.8s 0.5s ease, transform 0.8s 0.5s ease;
   }
   .page-wish {
-    font-size: clamp(1em, 1.3vw, 1.15em);
+    font-size: clamp(0.92em, 1.25vw, 1.04em);
     line-height: 1.8; color: #5a3a42; font-style: italic;
     opacity: 0; transform: translateY(18px);
     transition: opacity 0.8s 0.65s ease, transform 0.8s 0.65s ease;
@@ -159,31 +153,31 @@
     opacity: 1; transform: translateY(0);
   }
 
-  /* Кнопки навигации (привязаны к книге) */
+  /* Кнопки навигации */
   .nav-btn {
     position: absolute; top: 50%;
     transform: translateY(-50%);
     width: 56px; height: 56px; border-radius: 50%;
     border: none; cursor: pointer;
-    background: rgba(255,255,255,0.9);
-    color: #c94b6b; font-size: 28px; font-family: Georgia, serif;
+    background: rgba(255,255,255,0.92);
+    color: #c94b6b; font-size: 26px; font-family: Georgia, serif;
     display: flex; justify-content: center; align-items: center;
-    box-shadow: 0 6px 20px rgba(180, 80, 120, 0.25);
+    box-shadow: 0 6px 22px rgba(180, 80, 120, 0.32);
     transition: all 0.25s; z-index: 1000;
   }
   .nav-btn:hover:not(:disabled) {
     background: #c94b6b; color: #fff;
     transform: translateY(-50%) scale(1.1);
   }
-  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .nav-btn:disabled { opacity: 0.28; cursor: not-allowed; }
   
-  /* Кнопки вынесены за края книги */
-  .nav-prev { left: -80px; }
-  .nav-next { right: -80px; }
+  /* Расположение кнопок (привязано к правому краю книги) */
+  .nav-prev { left: calc(5vw + min(700px, 45vw) - 82px); }
+  .nav-next { right: 24px; }
 
   /* Прогресс-точки */
   .progress {
-    position: fixed; bottom: 20px; left: 50%;
+    position: fixed; bottom: 22px; left: 50%;
     transform: translateX(-50%);
     display: flex; gap: 8px; z-index: 1000;
     max-width: 90vw; flex-wrap: wrap; justify-content: center;
@@ -196,25 +190,23 @@
   .dot.active { background: #c94b6b; transform: scale(1.4); }
 
   /* Мобильная версия */
-  @media (max-width: 900px) {
-    .book-wrapper { perspective: 1600px; }
-    .book { margin: 0 15px; max-height: 85vh; }
+  @media (max-width: 800px) {
+    .book-wrapper { justify-content: center; perspective: 1600px; }
+    .book { width: 92vw; height: 82vh; margin-right: 0; }
     .page-front {
       flex-direction: column; padding: 20px;
-      gap: 15px; align-items: center;
+      gap: 12px; align-items: center;
     }
     .photo-side { flex: 0 0 auto; }
-    .photo-frame { max-width: 140px; aspect-ratio: 1; padding: 8px; }
+    .photo-frame { max-width: 150px; aspect-ratio: 1; padding: 8px; }
     .text-side { padding-right: 0; text-align: center; }
     .page-title { font-size: 1.8em; margin-bottom: 10px; }
     .page-wish { font-size: 0.85em; line-height: 1.7; }
-    
-    .nav-prev { left: 5px; }
-    .nav-next { right: 5px; }
+    .nav-prev { left: 10px; }
+    .nav-next { right: 10px; }
     .nav-btn { width: 44px; height: 44px; font-size: 20px; }
-    
     .dot { width: 8px; height: 8px; }
-    .progress { bottom: 15px; gap: 6px; }
+    .progress { bottom: 14px; gap: 6px; }
   }
 </style>
 </head>
@@ -328,7 +320,7 @@ function flipForward(target) {
   const flip = pages[current];
   flip.style.zIndex = 999;
   void flip.offsetWidth;
-  flip.style.transform = 'rotateY(-180deg)';
+  flip.style.transform = 'translateZ(0) rotateY(-180deg)';
   let handled = false;
   const done = () => {
     if (handled) return;
@@ -355,7 +347,7 @@ function flipBackward(target) {
   const flip = pages[current - 1];
   flip.style.zIndex = 999;
   void flip.offsetWidth;
-  flip.style.transform = 'rotateY(0deg)';
+  flip.style.transform = 'translateZ(0) rotateY(0deg)';
   pages[current].classList.remove('active');
   let handled = false;
   const done = () => {
@@ -383,10 +375,10 @@ function jumpInstant(target) {
     p.style.transition = 'none';
     p.classList.remove('active');
     if (i < target) {
-      p.style.transform = 'rotateY(-180deg)';
+      p.style.transform = 'translateZ(0) rotateY(-180deg)';
       p.style.zIndex = 0;
     } else {
-      p.style.transform = 'rotateY(0deg)';
+      p.style.transform = 'translateZ(0) rotateY(0deg)';
       p.style.zIndex = pages.length - i;
     }
   });
@@ -461,7 +453,6 @@ function toggleMusic() {
 
 musicBtn.addEventListener('click', toggleMusic);
 
-// Браузеры блокируют автоплей, поэтому запускаем музыку при первом клике/тапе по сайту
 document.addEventListener('click', function initAudio() {
   if (!isPlaying && music.paused) {
     music.play().then(() => {
