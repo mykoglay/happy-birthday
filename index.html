@@ -74,15 +74,15 @@
   .music-btn.playing { animation: spin 4s linear infinite; }
   @keyframes spin { 100% { transform: rotate(360deg); } }
 
-  /* Расположение книги (ТЕПЕРЬ РОВНО ПО ЦЕНТРУ) */
+  /* Расположение книги */
   .book-wrapper {
     width: 100vw; height: 100vh;
     display: flex; justify-content: center; align-items: center;
     perspective: 2800px;
   }
   .book {
-    width: min(850px, 80vw); /* Сделали шире, чтобы текст влезал */
-    height: min(600px, 82vh);
+    width: min(800px, 75vw); 
+    height: min(550px, 80vh);
     position: relative; transform-style: preserve-3d;
   }
 
@@ -116,32 +116,49 @@
 
   /* Блок с фото / видео */
   .photo-side { flex: 0 0 42%; display: flex; justify-content: center; align-items: center; }
+  
   .photo-frame {
-    position: relative; width: 100%; max-width: 280px;
-    aspect-ratio: 3 / 4; background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+    position: relative; 
+    width: 100%; 
+    max-width: 250px; 
+    height: 100%; 
+    max-height: 360px; 
+    aspect-ratio: 3 / 4; 
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
     padding: 10px; box-shadow: 0 8px 25px rgba(180, 80, 120, 0.25);
     border-radius: 4px; opacity: 0; transform: rotate(-2deg) translateY(20px) scale(0.92);
     transition: opacity 0.9s 0.3s ease, transform 0.9s 0.3s ease;
+    overflow: hidden; 
   }
-  .photo-frame img, .photo-frame video { 
+  
+  /* Стили для картинок */
+  .photo-frame img { 
     width: 100%; height: 100%; object-fit: cover; border-radius: 2px; display: block; 
   }
+
+  /* СТИЛИ ДЛЯ ВИДЕО (чтобы оно влезало целиком) */
+  .photo-frame video { 
+    width: 100%; height: 100%; object-fit: contain; /* contain - видео видно целиком */
+    background: #000; /* Черный фон вокруг видео, как в кинотеатре */
+    border-radius: 2px; display: block; 
+  }
+  
   .page.active .photo-frame { opacity: 1; transform: rotate(-2deg) translateY(0) scale(1); }
 
   /* Блок с текстом */
   .text-side { 
     flex: 1; display: flex; flex-direction: column; justify-content: center; 
     padding-right: 5px; 
-    min-width: 0; /* Важно: не дает тексту разорвать контейнер */
+    min-width: 0; 
     overflow-wrap: break-word; 
     word-wrap: break-word;
   }
   .page-num { font-family: 'Great Vibes', cursive; color: #d68aa8; font-size: 1.2em; margin-bottom: 6px; opacity: 0; transform: translateY(18px); transition: opacity 0.8s 0.35s ease, transform 0.8s 0.35s ease; }
-  .page-title { font-family: 'Great Vibes', cursive; color: #c94b6b; font-size: clamp(1.6em, 2.8vw, 2.3em); line-height: 1.15; margin-bottom: 15px; opacity: 0; transform: translateY(18px); transition: opacity 0.8s 0.5s ease, transform 0.8s 0.5s ease; }
-  .page-wish { font-size: clamp(0.9em, 1.15vw, 1.05em); line-height: 1.7; color: #5a3a42; font-style: italic; opacity: 0; transform: translateY(18px); transition: opacity 0.8s 0.65s ease, transform 0.8s 0.65s ease; }
+  .page-title { font-family: 'Great Vibes', cursive; color: #c94b6b; font-size: clamp(1.5em, 2.5vw, 2.2em); line-height: 1.15; margin-bottom: 15px; opacity: 0; transform: translateY(18px); transition: opacity 0.8s 0.5s ease, transform 0.8s 0.5s ease; }
+  .page-wish { font-size: clamp(0.85em, 1.1vw, 1em); line-height: 1.7; color: #5a3a42; font-style: italic; opacity: 0; transform: translateY(18px); transition: opacity 0.8s 0.65s ease, transform 0.8s 0.65s ease; }
   .page.active .page-num, .page.active .page-title, .page.active .page-wish { opacity: 1; transform: translateY(0); }
 
-  /* Кнопки навигации (вынесены за пределы книги) */
+  /* Кнопки навигации */
   .nav-btn {
     position: absolute; top: 50%; transform: translateY(-50%);
     width: 56px; height: 56px; border-radius: 50%; border: none; cursor: pointer;
@@ -152,9 +169,8 @@
   .nav-btn:hover:not(:disabled) { background: #c94b6b; color: #fff; transform: translateY(-50%) scale(1.1); }
   .nav-btn:disabled { opacity: 0.28; cursor: not-allowed; }
   
-  /* Идеальное позиционирование кнопок относительно центра */
-  .nav-prev { left: calc(50% - min(425px, 40vw) - 70px); }
-  .nav-next { right: calc(50% - min(425px, 40vw) - 70px); }
+  .nav-prev { left: calc(50% - min(400px, 37.5vw) - 70px); }
+  .nav-next { right: calc(50% - min(400px, 37.5vw) - 70px); }
 
   /* Прогресс-точки */
   .progress { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 1000; max-width: 90vw; flex-wrap: wrap; justify-content: center; }
@@ -169,12 +185,11 @@
     .book { width: 92vw; height: 82vh; }
     .page-front { flex-direction: column; padding: 20px; gap: 15px; align-items: center; }
     .photo-side { flex: 0 0 auto; }
-    .photo-frame { max-width: 160px; aspect-ratio: 1; padding: 8px; }
+    .photo-frame { max-width: 150px; max-height: 200px; padding: 8px; }
     .text-side { padding-right: 0; text-align: center; }
     .page-title { font-size: 1.8em; margin-bottom: 10px; }
     .page-wish { font-size: 0.85em; line-height: 1.6; }
     
-    /* На мобилках кнопки поверх книги по краям */
     .nav-prev { left: 10px; } 
     .nav-next { right: 10px; }
     .nav-btn { width: 44px; height: 44px; font-size: 20px; }
@@ -204,7 +219,6 @@
 
 <div class="book-wrapper">
   <div class="book" id="book"></div>
-  <!-- Кнопки теперь привязаны к центру экрана -->
   <button class="nav-btn nav-prev" id="prevBtn" aria-label="Назад">‹</button>
   <button class="nav-btn nav-next" id="nextBtn" aria-label="Вперёд">›</button>
 </div>
@@ -262,13 +276,14 @@ pagesData.forEach((data, i) => {
   
   let mediaHTML = `<img src="${data.photo}" alt="${data.title}" loading="eager">`;
   if (data.hasVideo) {
+    // Добавляем класс video-frame, чтобы применить черный фон
     mediaHTML = `<video src="1.MOV" autoplay muted loop playsinline></video>`;
   }
 
   p.innerHTML = `
     <div class="page-face page-front">
       <div class="photo-side">
-        <div class="photo-frame">
+        <div class="photo-frame ${data.hasVideo ? 'video-frame' : ''}">
           ${mediaHTML}
         </div>
       </div>
@@ -283,6 +298,7 @@ pagesData.forEach((data, i) => {
   book.appendChild(p);
 });
 
+// ... Дальше идет JS (логика перелистывания), он не менялся ...
 const pages = Array.from(document.querySelectorAll('.page'));
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
