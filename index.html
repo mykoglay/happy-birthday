@@ -138,10 +138,10 @@
   }
 
   /* ВИДЕО: заполняет всю рамку, без черных краев */
-  .photo-frame video { 
+   .photo-frame video { 
     width: 100%; height: 100%; 
-    object-fit: cover; 
-    background: transparent;
+    object-fit: contain; /* ВИДЕО ВИДНО ЦЕЛИКОМ */
+    background: #f8bbd0; /* РОЗОВЫЕ КРАЯ (или поставь #000 для черных) */
     border-radius: 2px; display: block; 
   }
   
