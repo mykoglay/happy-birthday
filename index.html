@@ -32,7 +32,7 @@
     position: fixed; top: 20px; right: 20px; z-index: 9999;
     width: 48px; height: 48px; border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.8);
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(5px);
     color: #c94b6b; font-size: 20px;
     cursor: pointer; box-shadow: 0 4px 15px rgba(201, 75, 107, 0.2);
@@ -42,16 +42,20 @@
   .music-btn.playing { animation: spin 4s linear infinite; }
   @keyframes spin { 100% { transform: rotate(360deg); } }
 
-  /* Книга */
+  /* Обертка для центрирования */
   .book-wrapper {
     width: 100vw; height: 100vh;
-    display: flex; justify-content: flex-end; align-items: center;
+    display: flex; justify-content: center; align-items: center;
     perspective: 2800px;
   }
+
+  /* Сама книга (фиксированные пропорции) */
   .book {
-    width: min(700px, 45vw);
-    height: min(620px, 82vh);
-    margin-right: 5vw;
+    width: 100%;
+    max-width: 900px; /* Ограничиваем ширину */
+    height: 100%;
+    max-height: 600px; /* Ограничиваем высоту */
+    margin: 0 40px; /* Отступы по бокам для кнопок */
     position: relative;
     transform-style: preserve-3d;
   }
@@ -65,42 +69,50 @@
     will-change: transform;
   }
   
-  /* ИСПРАВЛЕНИЕ БАГА: убрали общую тень, добавили правильные скругления */
   .page-face {
     position: absolute; inset: 0;
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
     overflow: hidden;
   }
+  
+  /* Лицевая сторона */
   .page-front {
-    border-radius: 0 18px 18px 0; /* Скругление справа */
-    box-shadow: 15px 15px 30px rgba(180, 80, 120, 0.12); /* Мягкая тень */
+    border-radius: 0 20px 20px 0;
+    box-shadow: 10px 10px 30px rgba(180, 80, 120, 0.15), 
+                inset 5px 0 15px rgba(180, 80, 120, 0.05); /* Тень внутри для эффекта сгиба */
     background:
       radial-gradient(circle at 100% 0%, rgba(255,220,230,0.6) 0%, transparent 55%),
       radial-gradient(circle at 0% 100%, rgba(255,200,220,0.4) 0%, transparent 55%),
-      linear-gradient(135deg, #fff9fb 0%, #fff5f8 100%);
-    display: flex; padding: 32px; gap: 26px;
+      linear-gradient(135deg, #ffffff 0%, #fff5f8 100%);
+    display: flex; 
+    padding: 40px; 
+    gap: 30px;
+    border-left: 2px solid #fce4ec; /* Корешок книги */
   }
+
+  /* Задняя сторона (когда перевернули) */
   .page-back {
     transform: rotateY(180deg);
-    border-radius: 18px 0 0 18px; /* Скругление слева (когда перевернута) */
-    box-shadow: -15px 15px 30px rgba(180, 80, 120, 0.12); /* Тень влево */
+    border-radius: 20px 0 0 20px;
+    box-shadow: -10px 10px 30px rgba(180, 80, 120, 0.15);
     background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
     display: flex; justify-content: center; align-items: center;
   }
   .page-back::after { content: '💗'; font-size: 64px; opacity: 0.55; }
 
-  /* Фото */
+  /* Блок с фото */
   .photo-side {
-    flex: 0 0 42%;
+    flex: 0 0 45%;
     display: flex; justify-content: center; align-items: center;
   }
   .photo-frame {
     position: relative;
-    width: 100%; max-width: 280px;
+    width: 100%; 
+    max-width: 280px;
     aspect-ratio: 3 / 4;
-    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
-    padding: 10px;
-    box-shadow: 0 10px 30px rgba(180, 80, 120, 0.28);
+    background: #fff;
+    padding: 12px;
+    box-shadow: 0 10px 25px rgba(180, 80, 120, 0.2);
     border-radius: 4px;
     opacity: 0;
     transform: rotate(-2deg) translateY(20px) scale(0.92);
@@ -115,28 +127,28 @@
     transform: rotate(-2deg) translateY(0) scale(1);
   }
 
-  /* Текст */
+  /* Блок с текстом */
   .text-side {
     flex: 1;
     display: flex; flex-direction: column; justify-content: center;
-    padding-right: 6px;
+    padding-right: 10px;
   }
   .page-num {
     font-family: 'Great Vibes', cursive;
-    color: #d68aa8; font-size: 1.2em; margin-bottom: 6px;
+    color: #d68aa8; font-size: 1.4em; margin-bottom: 8px;
     opacity: 0; transform: translateY(18px);
     transition: opacity 0.8s 0.35s ease, transform 0.8s 0.35s ease;
   }
   .page-title {
     font-family: 'Great Vibes', cursive;
     color: #c94b6b;
-    font-size: clamp(1.7em, 3vw, 2.4em);
-    line-height: 1.15; margin-bottom: 16px;
+    font-size: clamp(2em, 3vw, 2.8em);
+    line-height: 1.15; margin-bottom: 20px;
     opacity: 0; transform: translateY(18px);
     transition: opacity 0.8s 0.5s ease, transform 0.8s 0.5s ease;
   }
   .page-wish {
-    font-size: clamp(0.92em, 1.25vw, 1.04em);
+    font-size: clamp(1em, 1.3vw, 1.15em);
     line-height: 1.8; color: #5a3a42; font-style: italic;
     opacity: 0; transform: translateY(18px);
     transition: opacity 0.8s 0.65s ease, transform 0.8s 0.65s ease;
@@ -147,29 +159,31 @@
     opacity: 1; transform: translateY(0);
   }
 
-  /* Кнопки навигации */
+  /* Кнопки навигации (привязаны к книге) */
   .nav-btn {
     position: absolute; top: 50%;
     transform: translateY(-50%);
     width: 56px; height: 56px; border-radius: 50%;
     border: none; cursor: pointer;
-    background: rgba(255,255,255,0.92);
-    color: #c94b6b; font-size: 26px; font-family: Georgia, serif;
+    background: rgba(255,255,255,0.9);
+    color: #c94b6b; font-size: 28px; font-family: Georgia, serif;
     display: flex; justify-content: center; align-items: center;
-    box-shadow: 0 6px 22px rgba(180, 80, 120, 0.32);
+    box-shadow: 0 6px 20px rgba(180, 80, 120, 0.25);
     transition: all 0.25s; z-index: 1000;
   }
   .nav-btn:hover:not(:disabled) {
     background: #c94b6b; color: #fff;
     transform: translateY(-50%) scale(1.1);
   }
-  .nav-btn:disabled { opacity: 0.28; cursor: not-allowed; }
-  .nav-prev { left: calc(5vw + min(700px, 45vw) - 82px); }
-  .nav-next { right: 24px; }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  
+  /* Кнопки вынесены за края книги */
+  .nav-prev { left: -80px; }
+  .nav-next { right: -80px; }
 
   /* Прогресс-точки */
   .progress {
-    position: fixed; bottom: 22px; left: 50%;
+    position: fixed; bottom: 20px; left: 50%;
     transform: translateX(-50%);
     display: flex; gap: 8px; z-index: 1000;
     max-width: 90vw; flex-wrap: wrap; justify-content: center;
@@ -181,37 +195,26 @@
   }
   .dot.active { background: #c94b6b; transform: scale(1.4); }
 
-  /* Подсказка */
-  .hint {
-    position: fixed; bottom: 22px; right: 22px;
-    font-size: 0.85em; color: #d68aa8; font-style: italic;
-    animation: hintPulse 2.2s infinite;
-    pointer-events: none; z-index: 1000;
-  }
-  @keyframes hintPulse {
-    0%, 100% { opacity: 0.45; }
-    50% { opacity: 1; }
-  }
-
   /* Мобильная версия */
-  @media (max-width: 800px) {
-    .book-wrapper { justify-content: center; perspective: 1600px; }
-    .book { width: 92vw; height: 82vh; margin-right: 0; }
+  @media (max-width: 900px) {
+    .book-wrapper { perspective: 1600px; }
+    .book { margin: 0 15px; max-height: 85vh; }
     .page-front {
       flex-direction: column; padding: 20px;
-      gap: 12px; align-items: center;
+      gap: 15px; align-items: center;
     }
     .photo-side { flex: 0 0 auto; }
-    .photo-frame { max-width: 150px; aspect-ratio: 1; padding: 8px; }
+    .photo-frame { max-width: 140px; aspect-ratio: 1; padding: 8px; }
     .text-side { padding-right: 0; text-align: center; }
     .page-title { font-size: 1.8em; margin-bottom: 10px; }
     .page-wish { font-size: 0.85em; line-height: 1.7; }
-    .nav-prev { left: 10px; }
-    .nav-next { right: 10px; }
+    
+    .nav-prev { left: 5px; }
+    .nav-next { right: 5px; }
     .nav-btn { width: 44px; height: 44px; font-size: 20px; }
-    .hint { display: none; }
+    
     .dot { width: 8px; height: 8px; }
-    .progress { bottom: 14px; gap: 6px; }
+    .progress { bottom: 15px; gap: 6px; }
   }
 </style>
 </head>
@@ -219,7 +222,6 @@
 
 <div class="bg-hearts" id="bgHearts"></div>
 
-<!-- Кнопка и музыка -->
 <audio id="bgMusic" loop>
   <source src="music.mp3" type="audio/mpeg">
 </audio>
@@ -232,7 +234,6 @@
 </div>
 
 <div class="progress" id="progress"></div>
-<div class="hint">листай книгу →</div>
 
 <script>
 /* ============================================================
