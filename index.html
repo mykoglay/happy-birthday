@@ -113,7 +113,7 @@
   }
   .page-back::after { content: '💗'; font-size: 64px; opacity: 0.55; }
 
-  /* Блок с фото */
+  /* Блок с фото / видео */
   .photo-side { flex: 0 0 42%; display: flex; justify-content: center; align-items: center; }
   .photo-frame {
     position: relative; width: 100%; max-width: 280px;
@@ -122,7 +122,9 @@
     border-radius: 4px; opacity: 0; transform: rotate(-2deg) translateY(20px) scale(0.92);
     transition: opacity 0.9s 0.3s ease, transform 0.9s 0.3s ease;
   }
-  .photo-frame img { width: 100%; height: 100%; object-fit: cover; border-radius: 2px; display: block; }
+  .photo-frame img, .photo-frame video { 
+    width: 100%; height: 100%; object-fit: cover; border-radius: 2px; display: block; 
+  }
   .page.active .photo-frame { opacity: 1; transform: rotate(-2deg) translateY(0) scale(1); }
 
   /* Блок с текстом */
@@ -131,18 +133,6 @@
   .page-title { font-family: 'Great Vibes', cursive; color: #c94b6b; font-size: clamp(1.7em, 3vw, 2.4em); line-height: 1.15; margin-bottom: 16px; opacity: 0; transform: translateY(18px); transition: opacity 0.8s 0.5s ease, transform 0.8s 0.5s ease; }
   .page-wish { font-size: clamp(0.92em, 1.25vw, 1.04em); line-height: 1.8; color: #5a3a42; font-style: italic; opacity: 0; transform: translateY(18px); transition: opacity 0.8s 0.65s ease, transform 0.8s 0.65s ease; }
   .page.active .page-num, .page.active .page-title, .page.active .page-wish { opacity: 1; transform: translateY(0); }
-
-  /* Кнопка Видео */
-  .video-btn {
-    display: inline-block; margin-top: 20px; padding: 12px 25px;
-    background: #c94b6b; color: #fff; border: none; border-radius: 25px;
-    font-size: 1em; font-family: 'Playfair Display', serif; cursor: pointer;
-    box-shadow: 0 4px 15px rgba(201, 75, 107, 0.4); transition: all 0.3s;
-    opacity: 0; transform: translateY(18px);
-    transition: opacity 0.8s 0.8s ease, transform 0.8s 0.8s ease, background 0.3s;
-  }
-  .page.active .video-btn { opacity: 1; transform: translateY(0); }
-  .video-btn:hover { background: #a83c57; transform: translateY(-2px); }
 
   /* Кнопки навигации */
   .nav-btn {
@@ -162,28 +152,6 @@
   .dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(201, 75, 107, 0.32); cursor: pointer; transition: all 0.3s; }
   .dot.active { background: #c94b6b; transform: scale(1.4); }
 
-  /* МОДАЛЬНОЕ ОКНО ДЛЯ ВИДЕО */
-  .video-modal {
-    position: fixed; inset: 0; z-index: 20000;
-    background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px);
-    display: flex; justify-content: center; align-items: center;
-    opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-  }
-  .video-modal.active { opacity: 1; pointer-events: auto; }
-  .video-container {
-    width: 90%; max-width: 800px; background: #000;
-    border-radius: 12px; overflow: hidden; position: relative;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-  .video-modal.active .video-container { transform: scale(1); }
-  .video-container video { width: 100%; display: block; max-height: 80vh; }
-  .close-video {
-    position: absolute; top: -45px; right: 0;
-    color: #fff; font-size: 35px; cursor: pointer;
-    background: none; border: none; line-height: 1;
-  }
-  
   /* Мобильная версия */
   @media (max-width: 800px) {
     .cover-title { font-size: 2.8em; }
@@ -230,19 +198,9 @@
 
 <div class="progress" id="progress"></div>
 
-<!-- МОДАЛЬНОЕ ОКНО ВИДЕО -->
-<div class="video-modal" id="videoModal">
-  <div class="video-container">
-    <button class="close-video" id="closeVideo">×</button>
-    <video id="surpriseVideo" controls playsinline>
-      <source src="1.MOV" type="video/mp4">
-    </video>
-  </div>
-</div>
-
 <script>
 /* ============================================================
-   ✏️  ТЕКСТЫ И ФОТО (сохранены все ваши правки)
+   ✏️  ТЕКСТЫ И ФОТО (ваши правки)
    ============================================================ */
 const pagesData = [
   { photo: '1.png',  chapter: 'Глава 1',    title: 'С Днём Рождения!🎁',
@@ -278,8 +236,8 @@ const pagesData = [
   { photo: '16.png', chapter: 'Финал',      title: 'С любовью ❤️',
     wish: 'Спасибо, что ты есть в моей жизни. С днём рождения, любимая! Пусть этот год станет лучшим в твоей жизни — полным любви, приключений и смеха. Я всегда рядом, пусть этот сайт будет лишь маленькой частью того, что я чувствую к тебе. С твоим днем, любимая! Ты — лучшее, что есть у меня, и я хочу всегда видеть тебя счастливой.' },
   // 17-я страница (Эпилог с видео)
-  { photo: '14.png', chapter: 'Эпилог',     title: 'Наш сюрприз 🎬', hasVideo: true,
-    wish: 'И напоследок... Я подготовил для тебя кое-что особенное. Нажми на кнопку ниже!' },
+  { photo: '16.png', chapter: 'Эпилог',     title: 'Наш сюрприз 🎬', hasVideo: true,
+    wish: 'И напоследок... Я подготовил для тебя кое-что особенное. Смотри скорее!' },
 ];
 
 // --- Генерация страниц ---
@@ -289,23 +247,24 @@ pagesData.forEach((data, i) => {
   p.className = 'page';
   p.dataset.index = i;
   
-  // Если есть флаг hasVideo, добавляем кнопку
-  const videoBtnHTML = data.hasVideo 
-    ? `<button class="video-btn">🎬 Смотреть видео</button>` 
-    : '';
+  // Если у страницы есть видео, вставляем тег <video> вместо <img>.
+  // muted (без звука), autoplay (автовоспроизведение), loop (зациклено), playsinline (для iPhone)
+  let mediaHTML = `<img src="${data.photo}" alt="${data.title}" loading="eager">`;
+  if (data.hasVideo) {
+    mediaHTML = `<video src="video.mp4" autoplay muted loop playsinline></video>`;
+  }
 
   p.innerHTML = `
     <div class="page-face page-front">
       <div class="photo-side">
         <div class="photo-frame">
-          <img src="${data.photo}" alt="${data.title}" loading="eager">
+          ${mediaHTML}
         </div>
       </div>
       <div class="text-side">
         <div class="page-num">${data.chapter}</div>
         <h2 class="page-title">${data.title}</h2>
         <p class="page-wish">${data.wish}</p>
-        ${videoBtnHTML}
       </div>
     </div>
     <div class="page-face page-back"></div>
@@ -486,41 +445,6 @@ cover.addEventListener('click', () => {
 });
 
 updateUI();
-
-/* ============================================================
-   🎬 ЛОГИКА ВИДЕО
-   ============================================================ */
-const videoModal = document.getElementById('videoModal');
-const closeVideoBtn = document.getElementById('closeVideo');
-const surpriseVideo = document.getElementById('surpriseVideo');
-
-// Открытие видео
-document.querySelectorAll('.video-btn').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    videoModal.classList.add('active');
-    // Приглушаем фоновую музыку
-    if (isPlaying) {
-      music.pause();
-      musicBtn.textContent = '🎵';
-      musicBtn.classList.remove('playing');
-      isPlaying = false;
-    }
-    surpriseVideo.play().catch(e => console.log("Видео заблокировано:", e));
-  });
-});
-
-// Закрытие видео
-function closeVideo() {
-  videoModal.classList.remove('active');
-  surpriseVideo.pause();
-  surpriseVideo.currentTime = 0; 
-}
-closeVideoBtn.addEventListener('click', closeVideo);
-
-videoModal.addEventListener('click', (e) => {
-  if (e.target === videoModal) closeVideo();
-});
 </script>
 </body>
 </html>
