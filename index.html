@@ -74,16 +74,15 @@
   .music-btn.playing { animation: spin 4s linear infinite; }
   @keyframes spin { 100% { transform: rotate(360deg); } }
 
-  /* Расположение книги (немного шире и правее) */
+  /* Расположение книги (ТЕПЕРЬ РОВНО ПО ЦЕНТРУ) */
   .book-wrapper {
     width: 100vw; height: 100vh;
-    display: flex; justify-content: flex-end; align-items: center;
+    display: flex; justify-content: center; align-items: center;
     perspective: 2800px;
   }
   .book {
-    width: min(850px, 52vw); /* Увеличили ширину для текста */
-    height: min(620px, 82vh);
-    margin-right: 4vw; 
+    width: min(850px, 80vw); /* Сделали шире, чтобы текст влезал */
+    height: min(600px, 82vh);
     position: relative; transform-style: preserve-3d;
   }
 
@@ -105,7 +104,7 @@
       radial-gradient(circle at 100% 0%, rgba(255,220,230,0.6) 0%, transparent 55%),
       radial-gradient(circle at 0% 100%, rgba(255,200,220,0.4) 0%, transparent 55%),
       linear-gradient(135deg, #fff9fb 0%, #fff5f8 100%);
-    display: flex; padding: 25px; gap: 20px; /* Уменьшили отступы внутри */
+    display: flex; padding: 30px; gap: 25px;
   }
   .page-back {
     transform: rotateY(180deg); border-radius: 18px 0 0 18px;
@@ -115,10 +114,10 @@
   }
   .page-back::after { content: '💗'; font-size: 64px; opacity: 0.55; }
 
-  /* Блок с фото / видео (сделали чуть уже) */
-  .photo-side { flex: 0 0 40%; display: flex; justify-content: center; align-items: center; }
+  /* Блок с фото / видео */
+  .photo-side { flex: 0 0 42%; display: flex; justify-content: center; align-items: center; }
   .photo-frame {
-    position: relative; width: 100%; max-width: 250px; /* Чуть меньше рамка */
+    position: relative; width: 100%; max-width: 280px;
     aspect-ratio: 3 / 4; background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
     padding: 10px; box-shadow: 0 8px 25px rgba(180, 80, 120, 0.25);
     border-radius: 4px; opacity: 0; transform: rotate(-2deg) translateY(20px) scale(0.92);
@@ -133,15 +132,16 @@
   .text-side { 
     flex: 1; display: flex; flex-direction: column; justify-content: center; 
     padding-right: 5px; 
-    min-width: 0; /* Важно: разрешает тексту сжиматься и переноситься */
-    overflow-wrap: break-word; /* Перенос длинных слов */
+    min-width: 0; /* Важно: не дает тексту разорвать контейнер */
+    overflow-wrap: break-word; 
+    word-wrap: break-word;
   }
-  .page-num { font-family: 'Great Vibes', cursive; color: #d68aa8; font-size: 1.2em; margin-bottom: 5px; opacity: 0; transform: translateY(18px); transition: opacity 0.8s 0.35s ease, transform 0.8s 0.35s ease; }
-  .page-title { font-family: 'Great Vibes', cursive; color: #c94b6b; font-size: clamp(1.6em, 2.8vw, 2.2em); line-height: 1.15; margin-bottom: 12px; opacity: 0; transform: translateY(18px); transition: opacity 0.8s 0.5s ease, transform 0.8s 0.5s ease; }
-  .page-wish { font-size: clamp(0.9em, 1.2vw, 1em); line-height: 1.7; color: #5a3a42; font-style: italic; opacity: 0; transform: translateY(18px); transition: opacity 0.8s 0.65s ease, transform 0.8s 0.65s ease; }
+  .page-num { font-family: 'Great Vibes', cursive; color: #d68aa8; font-size: 1.2em; margin-bottom: 6px; opacity: 0; transform: translateY(18px); transition: opacity 0.8s 0.35s ease, transform 0.8s 0.35s ease; }
+  .page-title { font-family: 'Great Vibes', cursive; color: #c94b6b; font-size: clamp(1.6em, 2.8vw, 2.3em); line-height: 1.15; margin-bottom: 15px; opacity: 0; transform: translateY(18px); transition: opacity 0.8s 0.5s ease, transform 0.8s 0.5s ease; }
+  .page-wish { font-size: clamp(0.9em, 1.15vw, 1.05em); line-height: 1.7; color: #5a3a42; font-style: italic; opacity: 0; transform: translateY(18px); transition: opacity 0.8s 0.65s ease, transform 0.8s 0.65s ease; }
   .page.active .page-num, .page.active .page-title, .page.active .page-wish { opacity: 1; transform: translateY(0); }
 
-  /* Кнопки навигации */
+  /* Кнопки навигации (вынесены за пределы книги) */
   .nav-btn {
     position: absolute; top: 50%; transform: translateY(-50%);
     width: 56px; height: 56px; border-radius: 50%; border: none; cursor: pointer;
@@ -151,8 +151,10 @@
   }
   .nav-btn:hover:not(:disabled) { background: #c94b6b; color: #fff; transform: translateY(-50%) scale(1.1); }
   .nav-btn:disabled { opacity: 0.28; cursor: not-allowed; }
-  .nav-prev { left: calc(4vw + min(850px, 52vw) - 82px); }
-  .nav-next { right: 24px; }
+  
+  /* Идеальное позиционирование кнопок относительно центра */
+  .nav-prev { left: calc(50% - min(425px, 40vw) - 70px); }
+  .nav-next { right: calc(50% - min(425px, 40vw) - 70px); }
 
   /* Прогресс-точки */
   .progress { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 1000; max-width: 90vw; flex-wrap: wrap; justify-content: center; }
@@ -164,16 +166,19 @@
     .cover-title { font-size: 2.8em; }
     .cover-subtitle { font-size: 0.9em; }
     .cover-card { padding: 40px 20px; }
-    .book-wrapper { justify-content: center; perspective: 1600px; }
-    .book { width: 92vw; height: 82vh; margin-right: 0; }
-    .page-front { flex-direction: column; padding: 20px; gap: 12px; align-items: center; }
+    .book { width: 92vw; height: 82vh; }
+    .page-front { flex-direction: column; padding: 20px; gap: 15px; align-items: center; }
     .photo-side { flex: 0 0 auto; }
-    .photo-frame { max-width: 150px; aspect-ratio: 1; padding: 8px; }
+    .photo-frame { max-width: 160px; aspect-ratio: 1; padding: 8px; }
     .text-side { padding-right: 0; text-align: center; }
     .page-title { font-size: 1.8em; margin-bottom: 10px; }
     .page-wish { font-size: 0.85em; line-height: 1.6; }
-    .nav-prev { left: 10px; } .nav-next { right: 10px; }
+    
+    /* На мобилках кнопки поверх книги по краям */
+    .nav-prev { left: 10px; } 
+    .nav-next { right: 10px; }
     .nav-btn { width: 44px; height: 44px; font-size: 20px; }
+    
     .dot { width: 8px; height: 8px; }
     .progress { bottom: 14px; gap: 6px; }
   }
@@ -199,6 +204,7 @@
 
 <div class="book-wrapper">
   <div class="book" id="book"></div>
+  <!-- Кнопки теперь привязаны к центру экрана -->
   <button class="nav-btn nav-prev" id="prevBtn" aria-label="Назад">‹</button>
   <button class="nav-btn nav-next" id="nextBtn" aria-label="Вперёд">›</button>
 </div>
