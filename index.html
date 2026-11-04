@@ -27,19 +27,34 @@
     to { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
   }
 
+  /* Кнопка музыки */
+  .music-btn {
+    position: fixed; top: 20px; right: 20px; z-index: 9999;
+    width: 48px; height: 48px; border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(5px);
+    color: #c94b6b; font-size: 20px;
+    cursor: pointer; box-shadow: 0 4px 15px rgba(201, 75, 107, 0.2);
+    transition: all 0.3s; display: flex; justify-content: center; align-items: center;
+  }
+  .music-btn:hover { background: #fff; transform: scale(1.1); }
+  .music-btn.playing { animation: spin 4s linear infinite; }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+
   /* Книга */
-.book-wrapper {
-  /* было justify-content: flex-end; */
-  justify-content: center; 
-}
-.book {
-  /* было margin-right: 5vw; */
-  margin-right: 0; 
-}
-/* А кнопку "назад" нужно будет сдвинуть */
-.nav-prev {
-  left: calc(50% - min(350px, 22.5vw) - 28px); /* примерно так */
-}
+  .book-wrapper {
+    width: 100vw; height: 100vh;
+    display: flex; justify-content: flex-end; align-items: center;
+    perspective: 2800px;
+  }
+  .book {
+    width: min(700px, 45vw);
+    height: min(620px, 82vh);
+    margin-right: 5vw;
+    position: relative;
+    transform-style: preserve-3d;
+  }
 
   /* Страница */
   .page {
@@ -49,14 +64,16 @@
     transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
     will-change: transform;
   }
+  
+  /* ИСПРАВЛЕНИЕ БАГА: убрали общую тень, добавили правильные скругления */
   .page-face {
     position: absolute; inset: 0;
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
     overflow: hidden;
-    border-radius: 0 22px 22px 0;
-    box-shadow: 0 20px 60px rgba(180, 80, 120, 0.28);
   }
   .page-front {
+    border-radius: 0 18px 18px 0; /* Скругление справа */
+    box-shadow: 15px 15px 30px rgba(180, 80, 120, 0.12); /* Мягкая тень */
     background:
       radial-gradient(circle at 100% 0%, rgba(255,220,230,0.6) 0%, transparent 55%),
       radial-gradient(circle at 0% 100%, rgba(255,200,220,0.4) 0%, transparent 55%),
@@ -65,6 +82,8 @@
   }
   .page-back {
     transform: rotateY(180deg);
+    border-radius: 18px 0 0 18px; /* Скругление слева (когда перевернута) */
+    box-shadow: -15px 15px 30px rgba(180, 80, 120, 0.12); /* Тень влево */
     background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
     display: flex; justify-content: center; align-items: center;
   }
@@ -200,6 +219,12 @@
 
 <div class="bg-hearts" id="bgHearts"></div>
 
+<!-- Кнопка и музыка -->
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+<button id="musicBtn" class="music-btn" title="Включить/выключить музыку">🎵</button>
+
 <div class="book-wrapper">
   <div class="book" id="book"></div>
   <button class="nav-btn nav-prev" id="prevBtn" aria-label="Назад">‹</button>
@@ -211,60 +236,44 @@
 
 <script>
 /* ============================================================
-   ✏️  ЗДЕСЬ МЕНЯЕШЬ ТЕКСТЫ И ФОТО
+   ✏️  ТЕКСТЫ И ФОТО
    ============================================================ */
 const pagesData = [
   { photo: '1.png',  chapter: 'Глава I',    title: 'С Днём Рождения!',
     wish: 'Милая моя, этот день особенный — ведь именно сегодня мир стал чуточку светлее, потому что появилась ты. Пусть эта книга станет маленьким путешествием по всему, что я хочу тебе пожелать.' },
-
   { photo: '2.png',  chapter: 'Глава II',   title: 'Твоя улыбка',
     wish: 'Твоя улыбка — моё самое любимое зрелище на свете. Пусть в новом году будет как можно больше поводов для неё, а каждый рассвет приносит радость.' },
-
   { photo: '3.png',  chapter: 'Глава III',  title: 'Твои глаза',
     wish: 'В твоих глазах можно утонуть — такие они глубокие и тёплые. Желаю тебе видеть вокруг только хорошее, а в отражении — людей, которые тебя искренне любят.' },
-
   { photo: '4.png',  chapter: 'Глава IV',   title: 'Твоя доброта',
     wish: 'Ты умеешь согревать одним словом, одной улыбкой. Пусть твоя доброта возвращается к тебе сторицей, а мир будет к тебе так же нежен, как ты к нему.' },
-
   { photo: '5.png',  chapter: 'Глава V',    title: 'Твой смех',
     wish: 'Твой смех — лучше любой музыки. Пусть в твоей жизни будет столько поводов смеяться, что скучать просто не останется времени.' },
-
   { photo: '6.png',  chapter: 'Глава VI',   title: 'Мечты',
     wish: 'Загадай самое заветное желание — и оно обязательно сбудется. Ты заслуживаешь всего самого лучшего, что есть в этом мире. Пусть мечты превращаются в планы, а планы — в счастливые воспоминания.' },
-
   { photo: '7.png',  chapter: 'Глава VII',  title: 'Приключения',
     wish: 'Пусть этот год будет полон спонтанных поездок, новых мест и незабываемых моментов. И пусть рядом всегда будет кто-то, с кем не страшно свернуть с маршрута.' },
-
   { photo: '8.png',  chapter: 'Глава VIII', title: 'Здоровье',
     wish: 'Желаю тебе крепкого здоровья и энергии на всё, что ты задумала. Пусть тело будет лёгким, сон — сладким, а утро — добрым.' },
-
   { photo: '9.png',  chapter: 'Глава IX',   title: 'Любовь',
     wish: 'Желаю тебе любви — большой, настоящей, такой, от которой захватывает дух. И пусть она будет взаимной, нежной и каждый день — как в первый раз.' },
-
   { photo: '10.png', chapter: 'Глава X',    title: 'Друзья',
     wish: 'Пусть рядом всегда будут люди, которые тебя понимают без слов, поддерживают без условий и радуются твоим успехам, как своим собственным.' },
-
   { photo: '11.png', chapter: 'Глава XI',   title: 'Вдохновение',
     wish: 'Желаю тебе гореть любимым делом, находить красоту в мелочах и создавать то, что хочется показать миру. Твори, мечтай, живи на полную.' },
-
   { photo: '12.png', chapter: 'Глава XII',  title: 'Успех',
     wish: 'Пусть все твои начинания увенчаются успехом, а усилия — достойной наградой. Ты способна на большее, чем сама думаешь.' },
-
   { photo: '13.png', chapter: 'Глава XIII', title: 'Путешествия',
     wish: 'Пусть горизонты зовут, а билеты находятся сами собой. Впереди столько неизведанного — и всё это теперь твоё.' },
-
   { photo: '14.png', chapter: 'Глава XIV',  title: 'Семья',
     wish: 'Пусть дом будет тем местом, куда хочется возвращаться, где пахнет уютом и где тебя всегда ждут с любовью.' },
-
   { photo: '15.png', chapter: 'Глава XV',   title: 'Волшебство',
     wish: 'В жизни всегда есть место чуду — особенно для тех, кто в него верит. Пусть каждый день приносит маленькое волшебство и большие сюрпризы.' },
-
   { photo: '16.png', chapter: 'Финал',      title: 'С любовью 💝',
     wish: 'Спасибо, что ты есть в моей жизни. С днём рождения, любимая! Пусть этот год станет лучшим в твоей жизни — полным любви, приключений и смеха. Я всегда рядом. ❤️' },
 ];
-/* ============================================================ */
 
-// Генерируем страницы
+// --- Генерация страниц ---
 const book = document.getElementById('book');
 pagesData.forEach((data, i) => {
   const p = document.createElement('div');
@@ -296,10 +305,8 @@ const progress = document.getElementById('progress');
 let current = 0;
 let isFlipping = false;
 
-// Начальные z-index (страница 0 сверху)
 pages.forEach((p, i) => { p.style.zIndex = pages.length - i; });
 
-// Точки
 pages.forEach((_, i) => {
   const d = document.createElement('div');
   d.className = 'dot';
@@ -314,24 +321,20 @@ function updateUI() {
   nextBtn.disabled = current === pages.length - 1;
 }
 
-/* ---------- Листание вперёд ---------- */
 function flipForward(target) {
   if (current >= target) { isFlipping = false; return; }
   isFlipping = true;
-
-  const flipIndex = current;
-  const flip = pages[flipIndex];
+  const flip = pages[current];
   flip.style.zIndex = 999;
   void flip.offsetWidth;
   flip.style.transform = 'rotateY(-180deg)';
-
   let handled = false;
   const done = () => {
     if (handled) return;
     handled = true;
     flip.classList.remove('active');
     flip.style.zIndex = 0;
-    current = flipIndex + 1;
+    current++;
     pages[current].classList.add('active');
     updateUI();
     if (current < target) flipForward(target);
@@ -345,25 +348,21 @@ function flipForward(target) {
   setTimeout(done, 1250);
 }
 
-/* ---------- Листание назад ---------- */
 function flipBackward(target) {
   if (current <= target) { isFlipping = false; return; }
   isFlipping = true;
-
-  const flipIndex = current - 1;
-  const flip = pages[flipIndex];
+  const flip = pages[current - 1];
   flip.style.zIndex = 999;
   void flip.offsetWidth;
   flip.style.transform = 'rotateY(0deg)';
   pages[current].classList.remove('active');
-
   let handled = false;
   const done = () => {
     if (handled) return;
     handled = true;
     flip.classList.remove('active');
-    flip.style.zIndex = pages.length - flipIndex;
-    current = flipIndex;
+    flip.style.zIndex = pages.length - (current - 1);
+    current--;
     pages[current].classList.add('active');
     updateUI();
     if (current > target) flipBackward(target);
@@ -377,7 +376,6 @@ function flipBackward(target) {
   setTimeout(done, 1250);
 }
 
-/* ---------- Прыжок без анимации (для больших дистанций) ---------- */
 function jumpInstant(target) {
   isFlipping = true;
   pages.forEach((p, i) => {
@@ -400,7 +398,6 @@ function jumpInstant(target) {
   }, 100);
 }
 
-/* ---------- Публичный переход ---------- */
 function goTo(target) {
   if (isFlipping || target === current) return;
   if (target < 0 || target >= pages.length) return;
@@ -418,7 +415,6 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft')  goTo(current - 1);
 });
 
-// Свайпы на мобильных
 let tx = 0;
 document.addEventListener('touchstart', e => { tx = e.changedTouches[0].screenX; }, { passive: true });
 document.addEventListener('touchend', e => {
@@ -426,7 +422,6 @@ document.addEventListener('touchend', e => {
   if (Math.abs(diff) > 55) goTo(current + (diff > 0 ? 1 : -1));
 }, { passive: true });
 
-/* ---------- Фоновые сердечки ---------- */
 const bg = document.getElementById('bgHearts');
 const emojis = ['💕','💖','🌸','✨','💗'];
 setInterval(() => {
@@ -440,9 +435,42 @@ setInterval(() => {
   setTimeout(() => h.remove(), 18000);
 }, 700);
 
-/* ---------- Старт ---------- */
 updateUI();
 setTimeout(() => pages[0].classList.add('active'), 400);
+
+/* ============================================================
+   🎵 МУЗЫКА
+   ============================================================ */
+const music = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicBtn');
+let isPlaying = false;
+
+function toggleMusic() {
+  if (isPlaying) {
+    music.pause();
+    musicBtn.classList.remove('playing');
+    musicBtn.textContent = '🎵';
+  } else {
+    music.play().catch(e => console.log("Ошибка аудио:", e));
+    musicBtn.classList.add('playing');
+    musicBtn.textContent = '🎶';
+  }
+  isPlaying = !isPlaying;
+}
+
+musicBtn.addEventListener('click', toggleMusic);
+
+// Браузеры блокируют автоплей, поэтому запускаем музыку при первом клике/тапе по сайту
+document.addEventListener('click', function initAudio() {
+  if (!isPlaying && music.paused) {
+    music.play().then(() => {
+      isPlaying = true;
+      musicBtn.classList.add('playing');
+      musicBtn.textContent = '🎶';
+    }).catch(e => {});
+  }
+  document.removeEventListener('click', initAudio);
+});
 </script>
 </body>
 </html>
