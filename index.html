@@ -28,18 +28,18 @@
   }
 
   /* Книга */
-  .book-wrapper {
-    width: 100vw; height: 100vh;
-    display: flex; justify-content: flex-end; align-items: center;
-    perspective: 2800px;
-  }
-  .book {
-    width: min(700px, 45vw);
-    height: min(620px, 82vh);
-    margin-right: 5vw;
-    position: relative;
-    transform-style: preserve-3d;
-  }
+.book-wrapper {
+  /* было justify-content: flex-end; */
+  justify-content: center; 
+}
+.book {
+  /* было margin-right: 5vw; */
+  margin-right: 0; 
+}
+/* А кнопку "назад" нужно будет сдвинуть */
+.nav-prev {
+  left: calc(50% - min(350px, 22.5vw) - 28px); /* примерно так */
+}
 
   /* Страница */
   .page {
